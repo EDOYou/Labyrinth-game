@@ -4,8 +4,12 @@ import game.controller.LabyrinthController;
 import game.entities.Player;
 import game.entities.Dragon;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+import javax.swing.SwingUtilities;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 public class GameBoard extends JPanel {
@@ -63,5 +67,9 @@ public class GameBoard extends JPanel {
                 wall.draw(g2d);
             }
         }
+    }
+
+    public LabyrinthManager getLabyrinthManager() {
+        return labyrinthManager;
     }
 }
