@@ -39,10 +39,8 @@ public class GameBoard extends JPanel {
 
     private void updateGame() {
         labyrinthManager.moveDragon();
-        if (labyrinthManager.isGameWon()) {
-            labyrinthManager.handleGameOver(true);
-        } else if (labyrinthManager.isGameLost()) {
-            labyrinthManager.handleGameOver(false);
+        if (labyrinthManager.isGameLost()) {
+            labyrinthManager.handleGameOver();
         }
         repaint();
         requestFocusInWindow();

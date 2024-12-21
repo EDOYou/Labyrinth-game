@@ -38,7 +38,7 @@ public class LabyrinthManager {
         try {
             highScores = new HighScores(10);
         } catch (SQLException | ClassNotFoundException e) {
-            Logger.getLogger(LabyrinthManager.class.getName()).log(Level.SEVERE, "Something is wrong with database connection", e);
+            Logger.getLogger(LabyrinthManager.class.getName()).log(Level.SEVERE, "Database connection error", e);
         }
 
         initializeGame();
@@ -79,6 +79,7 @@ public class LabyrinthManager {
     }
 
     private void initializeWalls() {
+        walls.clear();
         boolean[][] grid = new boolean[20][20];
         int x = 0, y = 19;
         grid[x][y] = true;
@@ -132,6 +133,11 @@ public class LabyrinthManager {
             player.setX(newX);
             player.setY(newY);
             updateStatus();
+
+            if (isGameWon()) {
+                handleLabyrinthSolved();
+            }
+
             gameBoard.repaint();
         }
     }
@@ -162,6 +168,10 @@ public class LabyrinthManager {
         if (isValidMove(newX, newY)) {
             dragon.setX(newX);
             dragon.setY(newY);
+
+            if (isGameLost()) {
+                handleGameOver();
+            }
         }
     }
 
@@ -175,18 +185,28 @@ public class LabyrinthManager {
         return dx <= 1 && dy <= 1;
     }
 
-    public void handleGameOver(boolean won) {
+    private void handleLabyrinthSolved() {
+        labyrinthsSolved++;
+        JOptionPane.showMessageDialog(null, "Congratulations! You solved the labyrinth!");
+        restartLabyrinth();
+    }
+
+    private void restartLabyrinth() {
+        initializeWalls();
+        player.setX(0);
+        player.setY(19);
+        dragon.setX(random.nextInt(18) + 1);
+        dragon.setY(random.nextInt(18) + 1);
+        initializeGame();
+        gameBoard.repaint();
+    }
+
+    public void handleGameOver() {
         if (timer != null) {
             timer.stop();
         }
-        if (won) {
-            labyrinthsSolved++;
-        }
 
-        String message = won ? "You solved the labyrinth!" : "You were caught by the dragon!";
-        JOptionPane.showMessageDialog(null, message);
-
-        String playerName = JOptionPane.showInputDialog("Enter your name:");
+        String playerName = JOptionPane.showInputDialog("Game Over! Enter your name:");
         if (playerName != null && !playerName.trim().isEmpty()) {
             saveHighScore(playerName.trim());
         }
@@ -204,7 +224,6 @@ public class LabyrinthManager {
 
     private void showHighScores() {
         try {
-            System.out.println("High Scores:");
             for (HighScore score : highScores.getHighScores()) {
                 System.out.println(score);
             }
