@@ -1,7 +1,5 @@
 package game.entities;
 
-import game.core.GameObject;
-
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.awt.Graphics2D;

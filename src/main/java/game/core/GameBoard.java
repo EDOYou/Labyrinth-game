@@ -1,6 +1,7 @@
 package game.core;
 
 import game.controller.LabyrinthController;
+import game.entities.GameObject;
 import game.entities.Player;
 import game.entities.Dragon;
 
@@ -14,20 +15,22 @@ import java.util.ArrayList;
 
 public class GameBoard extends JPanel {
     private final LabyrinthManager labyrinthManager;
+    private final LabyrinthController labyrinthController;
     private final Player player;
     private final Dragon dragon;
     private final ArrayList<GameObject> walls;
-    private final LabyrinthController controller;
 
     public GameBoard() {
-        labyrinthManager = new LabyrinthManager(this);
+        walls = new ArrayList<>();
+        labyrinthManager = new LabyrinthManager(this, walls); // Pass walls to the manager
+        labyrinthController = new LabyrinthController(labyrinthManager, walls); // Initialize the controller
         player = labyrinthManager.getPlayer();
         dragon = labyrinthManager.getDragon();
-        walls = labyrinthManager.getWalls();
 
-        controller = new LabyrinthController(labyrinthManager);
+        labyrinthController.initializeWalls(); // Initialize walls via controller
+
         setFocusable(true);
-        addKeyListener(controller);
+        addKeyListener(labyrinthController);
         requestFocusInWindow();
 
         Timer timer = new Timer(500, e -> updateGame());
